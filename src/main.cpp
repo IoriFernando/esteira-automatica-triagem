@@ -1,18 +1,33 @@
 #include <Arduino.h>
+#include "servo_controller.h"
+#include "ultrasonic.h"
+#include "display.h"
 
-// put function declarations here:
-int myFunction(int, int);
+ServoController servos;
+Ultrasonic sensor(2, 3);  // TRIG = 2, ECHO = 3
+DisplayController tela;
+
+int countA = 0, countB = 0, countC = 0;
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+    Serial.begin(115200);
+
+    servos.begin(8, 9, 10);  // Servos nas GPIOs 8, 9, 10
+    tela.begin();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
+      char destino = sensor.medirDistanciaCM();
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+      if(destino == 'A'){
+          servos.desviarParaA();
+      }
+      else if(destino == 'B'){
+          servos.desviarParaB();
+      }
+      else if(destino == 'C'){
+          servos.desviarParaC();
+      }
+
+    delay(500);
 }
